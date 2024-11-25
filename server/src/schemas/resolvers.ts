@@ -6,13 +6,9 @@ const resolvers = {
     me: async (): Promise<UserDocument[] | null> => {
       return User.find({});
     },
-    matchups: async (_parent: any, { _id }: { _id: string }): Promise<UserDocument[] | null> => {
-      const params = _id ? { _id } : {};
-      return User.find(params);
-    },
   },
   Mutation: {
-    createUser: async (_parent: any, args: any) => {
+    addUser: async (_parent: any, args: any) => {
       const user = await User.create(args);
       const token = signToken(user.username, user.password, user._id);
       return {user, token};
@@ -39,7 +35,7 @@ const resolvers = {
       );
       return updatedUser;
     },
-    deleteBook: async (_parent: any, args: any, context: any) => {
+    removeBook: async (_parent: any, args: any, context: any) => {
       const updatedUser = await User.findOneAndUpdate(
         { _id: context.user._id },
         { $pull: { savedBooks: {bookId: args.bookId} } },
